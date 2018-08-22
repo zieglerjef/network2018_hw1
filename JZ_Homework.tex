@@ -1,0 +1,227 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{graphicx,textcomp}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage[reqno]{amsmath}
+\usepackage{amsthm}
+\usepackage{fancyvrb}
+\usepackage{amssymb,enumerate}
+\usepackage[all]{xy}
+\usepackage{endnotes}
+\usepackage{lscape}
+\newtheorem{com}{Comment}
+\usepackage{float}
+\usepackage{hyperref}
+\newtheorem{lem} {Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+\newtheorem{defn}{Definition}
+\newtheorem{cor}{Corollary}
+\newtheorem{obs}{Observation}
+\usepackage[compact]{titlesec}
+\usepackage{dcolumn}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{multirow}
+\usepackage{xcolor}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\definecolor{light-gray}{gray}{0.65}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ \lstset{style=mystyle}
+\newcommand{\Sref}[1]{Section~\ref{#1}}
+\newtheorem{hyp}{Hypothesis}
+
+\title{Network Analysis: Homework}
+\date{Due: August 23, 2018}
+\author{Jeff Ziegler}
+
+\begin{document}
+\maketitle
+
+\section{Nigeria Data Processing}
+
+\begin{itemize}
+	\item[a)] Process the data: turn this event dataset into a matrix.
+	
+	\lstinputlisting[language=R, firstline=1, lastline=1]{JZ_Homework.r}  
+	
+	\item[b)] Specifically, summarize the interactions across all time periods into an adjacency matrix where:
+	\begin{enumerate}
+		\item "1" indicates that $i$ and $j$ had a conflictual interaction sometime during the temporal span of the original dataset and zero otherwise.
+		\item Make sure all actors that existed at any point during the temporal span are included in the adjacency matrix.
+	\end{enumerate}
+\end{itemize}
+
+\section{Measurements \& Community Detection}
+
+\begin{itemize}
+	\item[a)] Which actor is the most “influential” in the network? Justify your response and the measure you choose to estimate “influence.”
+	\item[b)] Employ the blockmodel function from the sna package to explore potential group level structure in the data (see slides 61-63 from day 2 for details):
+	\begin{itemize}
+		\item Run blockmodel with varying levels of k.
+		\item Save the node classifications from each run.
+		\item Now how do we choose k?
+			\begin{itemize}
+				\item You will do so through an out-of-sample cross-validation exercise (at least 10 folds).
+				\item Report the AUC (ROC) and AUC (PR) statistics from each model.
+			\end{itemize}
+	\end{itemize}
+	\item [c)] After having determined the k that gives the best out of sample performance, visualize your results as shown in slide 67 from the day 2 lecture
+\end{itemize}
+
+
+\section{ERGMs}
+
+\begin{itemize}
+	\item[a)] Run a cross-sectional ERGM on the Nigerian conflict network, develop at least one or two network level hypotheses.
+	\item[b)] Briefly discuss the results.
+	\item [c)] Make sure to show that you checked for convergence.
+\end{itemize}
+
+%\begin{figure}[H]
+%  \caption{\footnotesize{Example documents highly associated with topics.}}
+%  \centering
+%   \includegraphics[width=.75\linewidth]{HW5topicReview.pdf}\\
+%\end{figure}
+%
+%\begin{figure}[H]
+%  \caption{\footnotesize{Expected distribution of topic proportions across the documents, vanilla LDA (left) and conditioning on {\tt desk} (right).}}
+%  \centering
+%   \includegraphics[width=.49\linewidth]{HW5topicProportionsSTM.pdf}
+%      \includegraphics[width=.49\linewidth]{HW5topicProportionsLDA.pdf}\\
+%\end{figure}
+%
+%\section{Machiavelli's Prince}
+%
+%In this part of the assignment we will analyze Machiavelli's \emph{The Prince}.  Download {\tt Mach.tar} from the course website and expand the compressed folder.  (This is relevant {\tt http://xkcd.com/1168/}).  \\
+%
+%Each file represents a subset of the manuscript.  We will analyze its contents using principal components, multidimensional scaling, and clustering methods.
+%
+%\subsection*{Create a Document-Term Matrix}
+%
+%Using the sections from the Machiavelli text, create a document term matrix.
+%\begin{itemize}
+%\item[-] Discard punctuation, capitalization
+%\item[-] Apply the porter stemmer to the documents
+%\item[-] Identify the 500 most common unigrams
+%\item[-] Create a $N \times 500$ document term matrix $\boldsymbol{X}$, where the columns count the unigrams and the rows are the documents
+%\end{itemize}
+%
+%
+%We will work with a normalized version of the term document matrix.  That is we will divide each row by the total number of words in the top 500 unigrams used:
+%\begin{eqnarray}
+%\boldsymbol{x}_{i}^{*} & = & \frac{\boldsymbol{x}_{i}}{\sum_{j=1}^{500} x_{ij}} \nonumber\\
+%\boldsymbol{X}^{*} & = & \begin{pmatrix} \boldsymbol{x}_{1}^{*} \\
+%\boldsymbol{x}_{2}^{*} \\
+%\vdots \\
+%\boldsymbol{x}_{N}^{*} \\
+%  \end{pmatrix}  \nonumber
+%\end{eqnarray}
+%
+%\lstinputlisting[language=R, firstline=56, lastline=85]{WUSTL_HW5_JZ.r}  
+%
+%\begin{Verbatim}
+%<<DocumentTermMatrix (documents: 188, terms: 500)>>
+%Non-/sparse entries: 6279/87721
+%Sparsity           : 93\%
+%Maximal term length: 14
+%Weighting          : term frequency (tf)
+%Sample             :
+%              Terms
+%Docs                alway        men        one      peopl      power      ruler       
+%  Mach_1.txt   0.00000000 0.01315789 0.00000000 0.00000000 0.00000000 0.01315789 
+%  Mach_101.txt 0.00000000 0.01086957 0.00000000 0.00000000 0.00000000 0.01086957 
+%  Mach_106.txt 0.01639344 0.00000000 0.01639344 0.00000000 0.00000000 0.01639344 
+%  Mach_110.txt 0.00000000 0.00000000 0.18000000 0.00000000 0.04000000 0.00000000 
+%  Mach_115.txt 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.05128205
+%  Mach_126.txt 0.04761905 0.00000000 0.04761905 0.04761905 0.02380952 0.04761905 
+%  Mach_153.txt 0.03333333 0.06666667 0.00000000 0.00000000 0.03333333 0.06666667 
+%  Mach_168.txt 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.02500000 
+%  Mach_56.txt  0.00000000 0.00000000 0.02040816 0.02040816 0.00000000 0.02040816 
+%  Mach_76.txt  0.03921569 0.01960784 0.00000000 0.01960784 0.01960784 0.05882353 
+%\end{Verbatim}
+%  
+%\subsection*{Low Dimensional Embeddings with Principal Components}
+%
+%\begin{itemize}
+%\item[1)]  Wise Will (WW), your friend with a weird name, notices you looking at the slides about principal component analysis (PCA).   WW casually remarks that the variance of the eigenvalues of the variance-covariance matrix is a useful heuristic for knowing if PCA can be fruitfully applied to some document-term matrix.  WW, completely unsolicited, explains that as the variance of the eigenvalues goes up, the more useful PCA will be.  He then laughs and leaves your office.  WW is kind of a jerk.   \\
+%
+%Let's formalize WW's suggestion. Suppose document-term matrix $\boldsymbol{X}$ has variance-covariance matrix $\boldsymbol{\Sigma} = \frac{\boldsymbol{X}^{'}\boldsymbol{X}}{N}$.  And suppose that $\boldsymbol{\Sigma}$ has eigenvalues $\lambda_{1}>\lambda_{2}>\hdots > \lambda_{d}>0$. Then we calculate the variance of the eigenvalues as
+%\begin{eqnarray}
+%\sigma^{2} & = & \frac{1}{d} \sum_{j=1}^{d}(\lambda_{j} - \bar{\lambda})^{2} \nonumber
+%\end{eqnarray}
+%
+%where $\bar{\lambda}$ is $\frac{1}{d} \sum_{i=1}^{d} \lambda_{i}$. WW is saying that as $\sigma^{2}$ gets bigger, a low-dimensional embedding via PCA will provide a better summary of our data.   \\
+%
+%Does WW have a good point?  Why or why not? (Hint: what do the eigenvalues represent?)
+%\end{itemize}
+%
+%\noindent Reducing the variance of the eigenvalues may or may not help improve PCA's ability to better summarize data, but reducing the sum of ?remaining? eigenvalues reduces the error because the total variance explained = (sum of included eigenvalues)/(sum of all eigenvalues). 
+%
+%\begin{itemize}
+%\item[2)] Apply the function {\tt prcomp} to $\boldsymbol{X}^{*}$. Be sure to set use a scaled version of the data, by setting {\tt scale = T}, which will ensure that each column has unit variance.
+%\item[a)] Create a plot of variance explained by each additional principal component. What does this plot suggest about the number of components to include?
+%\item[b)] Plot the two-dimensional embedding of the text documents.  Label the texts with their number.  (Each file is {\tt Mach\_XX.txt}, where {\tt XX} is the chunk number)
+%\item[c)] Label the two largest principal components.  What does this embedding suggest about the primary variation this representation of the Prince?  (Hint: if your {\tt embed} is your object with principal components, examine {\tt embed\$rotation})
+%\end{itemize}
+%
+%\lstinputlisting[language=R, firstline=87, lastline=113]{WUSTL_HW5_JZ.r}  
+%
+%\begin{figure}[H]
+%  \caption{\footnotesize{Scree plot of the variance explained by the addition of each component.}}
+%  \centering
+%   \includegraphics[width=.55\linewidth]{HW5screePlot.pdf}
+%\end{figure}
+%
+%\begin{figure}[H]
+%  \caption{\footnotesize{Projection of documents on the first two principal components.}}
+%  \centering
+%   \includegraphics[width=.6\linewidth]{HW5pcaEmbedding.pdf}
+%\end{figure}
+%
+%\begin{itemize}
+%\item[3)]An alternative method---discussed at the end of the seventh lecture---is multidimensional scaling (MDS).  Classic MDS attempts to preserve distances between objects in a low dimensional scaling.
+%
+%\begin{itemize}
+%\item[a)] Calculate the Euclidean distance between each document using $\boldsymbol{X}^{*}$.  Call this matrix $\boldsymbol{D}(\boldsymbol{X}^{*})$  (Hint: use {\tt R}'s built in function {\tt dist})
+%\item[b)] Apply the classic MDS to $\boldsymbol{D}(\boldsymbol{X}^{*})$ using the {\tt R} function {\tt cmdscale}.  That is, execute the code\\
+%{\tt mds\_scale<- cmdscale(DISTANCE\_MATRIX, k = 2)}
+%\item[c)] Apply PCA to $\boldsymbol{X}^{*}$, but this time do not use {\tt prcomp}'s scaling option.  That is, use {\tt prcomp} with {\tt scale = F}.
+%\item[d)] Compare the first dimension of the output from classic MDS to the first dimension of the embedding from principal components. What is the correlation between the embeddings?
+%\item[d)] Now use {\tt dist} to create a distance matrix using the {\tt manhattan} metric, apply Classic multidimensional scaling to the distance matrix based on manhattan distance, and compare the first dimension of this embedding to the first dimension from PCA.  What is the correlation?
+%\item[e)] What do you conclude about the relationship between PCA and MDS?
+%\end{itemize}
+%\end{itemize}
+%
+%\lstinputlisting[language=R, firstline=107, lastline=134]{WUSTL_HW5_JZ.r} 
+
+\end{document}
