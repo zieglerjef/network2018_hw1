@@ -1,8 +1,8 @@
 rm(list=ls())
 # set working directory to Git location
-setwd('/Users/jeffziegler/Documents/Git/')
+setwd('/Users/jeffziegler/Documents/Git/network2018_hw1/')
 # load data
-load("network2018_hw1/nigeria.rda")
+load("nigeria.rda")
 
 #############################
 # (1) Nigeria Data Processing
@@ -94,11 +94,8 @@ nigeriaAdjMatNetworkList  <- lapply(sort(unique(nigeria$year)), function(i){
 # (remember function takes in igraph object)
 # nFolds = number of folds (default = 10)
 # nClusters = number of cluster (default = 2)
-library(sna); library(caret); library(networkDynamic)
-library(devtools)
-install_github("leifeld/btergm", dependencies=TRUE)
-library(btergm)
-crossValidateFunc <- function(networkData, nFolds=10, nClusters=2) {
+library(sna); library(caret); library(networkDynamic); library(btergm)
+crossValidateFunc <- function(networkData, nFolds=NULL, nClusters=NULL) {
   # set seed for reproducibility
   set.seed(5)
   # createFolds function from caret package
@@ -140,3 +137,60 @@ crossValidateFunc <- function(networkData, nFolds=10, nClusters=2) {
   # return the mean of each statistic pooled over the folds
   return(list(avgAUC_ROC=mean(AUC_ROC), avgAUC_PR=mean(AUC_PR)))
 }
+
+# create empty vectors to fill with each run of clusters
+# which performs CV for each run
+AUC_ROCvec <- NULL; AUC_PRvec <- NULL
+# for each number of clusters
+for (k in 2:10) {
+  # run cross-validate function w/ 10 fold validation
+  cvNetwork <- crossValidateFunc(nigeriaAdjMatNetworkList, nFolds=10, nClusters=k)
+  # store AUC ROC and PR stats
+  AUC_ROCvec <- c(AUC_ROCvec, cvNetwork$avgAUC_ROC)
+  AUC_PRvec <- c(AUC_PRvec, cvNetwork$avgAUC_PR)
+}
+# show table of goodness-of-fit statistics
+print(data.frame(k=2:10, AUC_ROC=AUC_ROCvec, AUC_PR=AUC_PRvec))
+
+# (c) since we want these values to be higher
+# we'll do 7 clusters
+# re-create the network object
+networkList <- networkDynamic(network.list=nigeriaAdjMatNetworkList)
+# run the block model w/ 7 clusters
+bestKblockModel <- blockmodel(networkList,
+                     equiv.clust(networkList),
+                     k=7)
+# re-assign the groupings from the block model into the network object
+bestGrouping <- bestKblockModel$block.membership[bestKblockModel$order.vec]
+networkList%v%"member" <- bestGrouping
+# now for the plotting of actors' interactions by group
+# create colour paletter
+library(RColorBrewer)
+networkList %v% "col" <- brewer.pal(7, "Dark2")[networkList %v% "member"]
+# generate plot (see figure 1 below)
+pdf("figure1.pdf")
+plot(networkList, label = network.vertex.names(networkList), label.cex=0.5,
+     mode="circle", vertex.cex=log(degree(networkList))+1,
+     label.col="black", vertex.col="col", vertex.border="col", edge.col="black")
+dev.off()
+
+###########
+# (3) ERGMs
+###########
+
+# (a) Run a cross-sectional ERGM on the Nigerian conflict network
+# H1: First order (edges: Some actors (like the gov't) are 
+# engaged in conflict a lot, basically intercepts per actor)
+# H2: Second order (mutual: Reciprocity should be high)
+# wanted to test triangle in case allies exist in the network (police, military), transitivity might be high?)
+# but so few existed MCMC wouldn't get out of one region
+library(statnet)
+ERGMmodel <- ergm(as.network.matrix(nigeriaAdjMatTotalMatrix) ~ edges +
+                    mutual)
+
+# (b) results
+# reciprocity is high (when one actor is attacked, they retaliate)
+summary(ERGMmodel)
+
+# (c) check for convergence
+mcmc.diagnostics(ERGMmodel)
