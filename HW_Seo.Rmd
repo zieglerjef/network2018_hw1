@@ -1,0 +1,213 @@
+---
+title: "Homework for Network Analysis Workshop"
+author: "Min Hee Seo"
+date: "August 21st, 2018"
+output: pdf_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+\section{Exercise 1. Nigeria Data}
+
+```{r ex1, eval=T, echo=T, warning=F, message=F, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+# setup the working directory
+setwd("/Users/minheeseo/Dropbox/Classes/2018_Classes/Network/network2018_hw1/")
+# clean the workspace
+rm(list=ls())
+# loading data and R packages
+library(igraph)
+library(network)
+load("nigeria.rda")
+# first, check the number of actors and time span
+# length(unique(nigeria$sender))
+# length(unique(nigeria$receiver))
+# identical(unique(nigeria$sender), unique(nigeria$receiver)) # check the order 
+# length(unique(nigeria$year))
+# table(nigeria$conflict) # sparse data
+nigeria$sender<- gsub("\n", " ", nigeria$sender)
+nigeria$receiver <- gsub("\n", " ", nigeria$receiver)
+
+# create list where the length of list is time span
+network.mat <- vector("list",length(unique(nigeria$year))+1)
+names(network.mat) <- unique(nigeria$year)
+
+time <- unique(nigeria$year)
+for(t in 1:length(time)){
+  slice <- NULL
+  empty.mat <- NULL
+  country.senter <- country.receiver <- c()
+  slice <- nigeria[nigeria$year==time[t],]
+  country.sender <- unique(slice$sender)
+  empty.mat <-matrix(0, length(country.sender), length(unique(slice$receiver)))
+  empty.mat <- as.data.frame(empty.mat)
+  rownames(empty.mat) <- country.sender
+  colnames(empty.mat) <- unique(slice$receiver)
+  for(i in 1:length(country.sender)){
+    country.receiver <- unique(slice$receiver[slice$sender==country.sender[i]])
+    for(j in 1:length(country.receiver)){
+      empty.mat[rownames(empty.mat)==country.sender[i], colnames(empty.mat)==country.receiver[j]] <- slice$conflict[slice$sender==country.sender[i] & slice$receiver==country.receiver[j]]
+    }
+  }
+    network.mat[[t]] <-empty.mat
+}
+# network.mat list contains 17 matrix each one for each year
+country.sender <- unique(nigeria$sender)
+empty.mat <-matrix(0, length(country.sender), length(unique(nigeria$receiver)))
+empty.mat <- as.data.frame(empty.mat)
+rownames(empty.mat) <- country.sender
+colnames(empty.mat) <- unique(nigeria$receiver)
+for(i in 1:length(country.sender)){
+  country.receiver <- unique(nigeria$receiver[nigeria$sender==country.sender[i]])
+  for(j in 1:length(country.receiver)){
+    empty.mat[rownames(empty.mat)==country.sender[i],colnames(empty.mat)==country.receiver[j]] <- sum(nigeria$conflict[nigeria$sender==country.sender[i] & nigeria$receiver==country.receiver[j]])
+  }
+}
+names(network.mat)[18] <- "All Conflict"
+network.mat[[18]] <- empty.mat
+```
+
+
+```{r ex1plot, eval=T, echo=T, warning=F, message=F}
+myblue <- rgb(red = 0, green = 0, blue = 1, alpha = .8)
+mypink <- rgb(red = 1, green = 0, blue = 0, alpha = .25)
+
+par(mfrow=c(2, 2), mar=c(0,0.2,1,0.2))
+for(i in 1:4){
+  g <- NULL
+  g = graph_from_adjacency_matrix(as.matrix(network.mat[[i]]),
+                                mode='undirected')
+  tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+  V(g)$size <- (tiesSum+0.5)*6
+# only label if # ties greater than 10
+  V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+  V(g)$label.cex <- 0.6
+  plot(g,main=paste("Year:", names(network.mat)[i]),
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+}
+
+```
+
+
+```{r ex1plot2, eval=T, echo=F, warning=F, message=F}
+
+par(mfrow=c(2, 2), mar=c(0,0.2,1,0.2))
+for(i in 5:8){
+  g <- NULL
+  g = graph_from_adjacency_matrix(as.matrix(network.mat[[i]]),
+                                mode='undirected')
+  tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+  V(g)$size <- (tiesSum+0.5)*6
+# only label if # ties greater than 10
+  V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+  V(g)$label.cex <- 0.6
+  plot(g,main=paste("Year:", names(network.mat)[i]),
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+}
+```
+
+```{r ex1plot3, eval=T, echo=F, warning=F, message=F}
+par(mfrow=c(2, 2), mar=c(0,0.2,1,0.2))
+for(i in 9:12){
+  g <- NULL
+  g = graph_from_adjacency_matrix(as.matrix(network.mat[[i]]),
+                                mode='undirected')
+  tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+  V(g)$size <- (tiesSum+0.5)*6
+# only label if # ties greater than 10
+  V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+  V(g)$label.cex <- 0.6
+  plot(g,main=paste("Year:", names(network.mat)[i]),
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+}
+```
+
+```{r ex1plot4, eval=T, echo=F, warning=F, message=F}
+par(mfrow=c(2, 2), mar=c(0,0.2,1,0.2))
+for(i in 13:16){
+  g <- NULL
+  g = graph_from_adjacency_matrix(as.matrix(network.mat[[i]]),
+                                mode='undirected')
+  tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+  V(g)$size <- (tiesSum+0.5)*6
+# only label if # ties greater than 10
+  V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+  V(g)$label.cex <- 0.6
+  plot(g,main=paste("Year:", names(network.mat)[i]),
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+}
+
+```
+
+
+```{r ex1plot5, eval=T, echo=F, warning=F, message=F}
+par(mfrow=c(2, 2), mar=c(0,0.2,1,0.2))
+g <- NULL
+g = graph_from_adjacency_matrix(as.matrix(network.mat[[17]]),
+                                mode='undirected')
+tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+V(g)$size <- (tiesSum+0.5)*6
+# only label if # ties greater than 10
+V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+V(g)$label.cex <- 0.6
+plot(g,main=paste("Year:", names(network.mat)[17]),
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+g <- NULL
+g = graph_from_adjacency_matrix(as.matrix(network.mat[[18]]),
+                                mode='undirected')
+tiesSum = apply(g[], 1, sum)
+# condition size based on # of ties
+V(g)$size <- tiesSum*1/3
+# only label if # ties greater than 10
+V(g)$label <- ifelse( tiesSum>1, V(g)$name, NA )
+V(g)$label.cex <- 0.6
+plot(g,main=names(network.mat)[18],
+     vertex.label=V(g)$label, 
+     vertex.size=V(g)$size,
+     vertex.color =mypink, # change color of nodes
+     vertex.label.color = "black", # change color of labels
+     edge.curved=.25, # add a 25% curve to the edges
+     edge.color=myblue, # change edge color to grey  
+     layout=layout_with_fr)
+
+
+```
+\section{Exercise 2. Measurements \& Community detection}
