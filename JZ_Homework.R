@@ -92,36 +92,36 @@ nigeriaAdjMatNetworkList  <- lapply(sort(unique(nigeria$year)), function(i){
 # then we can run CV function for varying levels of k
 # Arguments:
 # (remember function takes in igraph object)
-# f = number of folds (default = 10)
-# k = number of cluster (default = 2)
+# nFolds = number of folds (default = 10)
+# nClusters = number of cluster (default = 2)
 library(sna); library(caret); library(networkDynamic)
 library(devtools)
 install_github("leifeld/btergm", dependencies=TRUE)
 library(btergm)
-crossValidateFunc <- function(networkData, f=10, k=2) {
+crossValidateFunc <- function(networkData, nFolds=10, nClusters=2) {
   # set seed for reproducibility
   set.seed(5)
   # createFolds function from caret package
   # argument gives a list of the indicies in each fold
   # from the groups that comprise all possible conflicts
   # return training data
-  folds <- createFolds(y = unique(nigeria$sender),
-                       k=f, returnTrain = T)
+  cvFolds <- createFolds(y = unique(nigeria$sender),
+                       k=nFolds, returnTrain = T)
   # create empty vectors to fill w/ goodness-of-fit stats
   # from TERGMS (AUC (ROC) and AUC (PR))
   # ROC and PR curves can be used to compare different model specifications, 
   # also for within-sample goodness-of-fit
   AUC_ROC <- NULL; AUC_PR <- NULL
   # iterate over folds
-  for (i in 1:f) {
+  for (i in 1:nFolds) {
     # transform input list into network list
     networkList <- networkDynamic(network.list=networkData)
     # remove the necessary observations that are exempt from each fold
-    delete.vertices(networkList, (1:dim(nigeriaAdjMat)[1])[-folds[[i]]])
+    delete.vertices(networkList, (1:dim(nigeriaAdjMat)[1])[-cvFolds[[i]]])
     # create clusters from structural equivalence
     equivNetClusters <- equiv.clust(networkList)
     # perform blockmodel
-    blockModel <- blockmodel(networkList, equivNetClusters, k=k)
+    blockModel <- blockmodel(networkList, equivNetClusters, k=nClusters)
     # take info that pertains to which block actors are placed in
     groupMembership <- blockModel$block.membership[blockModel$order.vec]
     # assign the block group values from the model back in the networkList
