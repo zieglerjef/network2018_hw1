@@ -1,0 +1,20 @@
+\frametitle{\large Investment treaty network: Network overview.}
+
+\begin{lstlisting}[language=R]
+# check proportion of present edges from all possible edges in the network.
+# for a directed network
+ecount(yGraph)/(vcount(yGraph)*(vcount(yGraph)-1))
+# very little violations in general, so unsuprising
+\end{lstlisting}
+\begin{verbatim}
+[1] 0.01820728
+\end{verbatim}
+
+\begin{lstlisting}[language=R]
+reciprocity(yGraph)
+# doesn't seem like passing expropriating policies
+# leads to other countries to sue, and then pass expropriating policies
+\end{lstlisting}
+\begin{verbatim}
+[1] 0
+\end{verbatim}
