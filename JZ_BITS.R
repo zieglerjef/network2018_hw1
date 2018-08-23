@@ -127,6 +127,7 @@ mcmc.diagnostics( lsEucl )
 # visualize results
 par(mfrow=c(1,1))
 # jitter the points
+zPos = summary(lsEucl)$'pmean'$Z
 zPosJitter = zPos+matrix(rnorm(length(zPos),0,.03),ncol=2)
 pdf("/Users/jeffziegler/Documents/Git/network2018_hw1/figure3.pdf")
 plot(yGraph, 

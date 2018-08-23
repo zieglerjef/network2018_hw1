@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.29)  23 AUG 2018 17:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.29)  23 AUG 2018 17:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1079,10 +1079,10 @@ Package rerunfilecheck Info: File `JZ_Homework.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 158.
  ) 
 Here is how much of TeX's memory you used:
- 23516 strings out of 492649
- 404059 string characters out of 6129607
+ 23518 strings out of 492649
+ 404081 string characters out of 6129607
  782374 words of memory out of 5000000
- 26625 multiletter control sequences out of 15000+600000
+ 26626 multiletter control sequences out of 15000+600000
  15031 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,6n,54p,3243b,2553s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1098,10 +1098,10 @@ cal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local
 texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/t
 exlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/tex
 live/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on JZ_Homework.pdf (10 pages, 249966 bytes).
+Output written on JZ_Homework.pdf (10 pages, 250192 bytes).
 PDF statistics:
- 521 PDF objects out of 1000 (max. 8388607)
- 489 compressed objects within 5 object streams
- 335 named destinations out of 1000 (max. 500000)
+ 522 PDF objects out of 1000 (max. 8388607)
+ 490 compressed objects within 5 object streams
+ 336 named destinations out of 1000 (max. 500000)
  55 words of extra memory for PDF output out of 10000 (max. 10000000)
 
